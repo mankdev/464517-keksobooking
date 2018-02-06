@@ -8,12 +8,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mankdev/464517-keksobooking.git"
+    "url": "git@github.com:htmlacademy-nodejs/464517-keksobooking.git"
   },
   "author": "Artem Parkhomenko (mankdev)",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/mankdev/464517-keksobooking/issues"
+    "url": "https://github.com/htmlacademy-nodejs/464517-keksobooking/issues"
   },
-  "homepage": "https://github.com/mankdev/464517-keksobooking#readme"
+  "homepage": "https://github.com/htmlacademy-nodejs/464517-keksobooking#readme"
 }
