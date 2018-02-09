@@ -1,50 +1,34 @@
-const pkg = require(`./package.json`);
-const [command] = process.argv.slice(2);
+const versionDescriptor = require(`./src/version`);
+const helpDescriptor = require(`./src/help`);
+const greetingDescriptor = require(`./src/greeting`);
+const unknownDescriptor = require(`./src/unknown`);
+const authorDescriptor = require(`./src/author`);
+const descriptionDescriptor = require(`./src/description`);
+const licenseDescriptor = require(`./src/license`);
 
-const argumentsMap = [
-  {
-    aliases: [`--version`, `-v`],
-    description: `печатает этот текст`,
-    handler: versionHandler
-  },
-  {
-    aliases: [`--help`, `-h`],
-    description: `печатает версию приложения`,
-    handler: helpHandler
-  }
+const registeredDescriptors = [
+  versionDescriptor,
+  helpDescriptor,
+  authorDescriptor,
+  descriptionDescriptor,
+  licenseDescriptor
 ];
 
-function versionHandler() {
-  console.log(`v${pkg.version}`);
-}
+const systemDescriptors = [
+  greetingDescriptor,
+];
 
-function helpHandler() {
-  console.log([
-    `Доступные команды:`,
-    ...argumentsMap.map((arg) => `${arg.aliases.join(`, `)} — ${arg.description};`)
-  ].join(`\n`));
-}
+const allDescriptors = [
+  ...registeredDescriptors,
+  ...systemDescriptors,
+];
 
-function emptyHandler() {
-  console.log(`Привет пользователь! Эта программа будет запускать сервер «${pkg.name}». Автор: ${pkg.author}.`);
-}
+const [command] = process.argv.slice(2);
 
-function errorHandler() {
-  console.log(`Неизвестная команда ${command}. Чтобы прочитать правила использования приложения, наберите "--help"`);
-  process.exit(1);
-}
+const commandDescriptor = allDescriptors.find(((cmd) => cmd.aliases.indexOf(command) > -1)) || unknownDescriptor;
 
-if (!command) {
-  emptyHandler();
-} else {
-
-  const commandDescriptor = argumentsMap.find(((cmd) => cmd.aliases.indexOf(command.toLowerCase()) > -1));
-
-  if (commandDescriptor) {
-    commandDescriptor.handler();
-  } else {
-    errorHandler();
-  }
-}
-
+commandDescriptor.execute({
+  registeredDescriptors,
+  command,
+});
 
