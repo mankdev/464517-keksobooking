@@ -1,15 +1,15 @@
-const pkg = require('./package.json');
+const pkg = require(`./package.json`);
 const [command] = process.argv.slice(2);
 
 const argumentsMap = [
   {
-    aliases: ['--version', '-v'],
-    description: 'печатает этот текст',
+    aliases: [`--version`, `-v`],
+    description: `печатает этот текст`,
     handler: versionHandler
   },
   {
-    aliases: ['--help', '-h'],
-    description: 'печатает версию приложения',
+    aliases: [`--help`, `-h`],
+    description: `печатает версию приложения`,
     handler: helpHandler
   }
 ];
@@ -20,9 +20,9 @@ function versionHandler() {
 
 function helpHandler() {
   console.log([
-    'Доступные команды:',
-    ...argumentsMap.map(arg => `${arg.aliases.join(', ')} — ${arg.description};`)
-  ].join('\n'));
+    `Доступные команды:`,
+    ...argumentsMap.map((arg) => `${arg.aliases.join(`, `)} — ${arg.description};`)
+  ].join(`\n`));
 }
 
 function emptyHandler() {
@@ -38,7 +38,7 @@ if (!command) {
   emptyHandler();
 } else {
 
-  const commandDescriptor = argumentsMap.find((cmd => cmd.aliases.indexOf(command.toLowerCase()) > -1));
+  const commandDescriptor = argumentsMap.find(((cmd) => cmd.aliases.indexOf(command.toLowerCase()) > -1));
 
   if (commandDescriptor) {
     commandDescriptor.handler();
