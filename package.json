@@ -1,8 +1,8 @@
 {
   "name": "keksobooking",
   "version": "0.0.1",
-  "description": "keksobooking",
-  "main": "index.js",
+  "description": "keksobooking server",
+  "main": "src/index.js",
   "scripts": {
     "test:lint": "eslint .",
     "test": "npm run test:lint"
