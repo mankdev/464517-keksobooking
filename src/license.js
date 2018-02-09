@@ -1,7 +1,8 @@
+const colors = require(`colors`);
 const pkg = require(`../package.json`);
 
 function licenseHandler() {
-  console.log(pkg.license);
+  console.log(colors.rainbow(pkg.license));
 }
 
 module.exports = {
