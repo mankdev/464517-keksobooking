@@ -1,7 +1,8 @@
+const colors = require(`colors`);
 const pkg = require(`../package.json`);
 
 function authorHandler() {
-  console.log(pkg.author);
+  console.log(colors.underline(pkg.author));
 }
 
 module.exports = {

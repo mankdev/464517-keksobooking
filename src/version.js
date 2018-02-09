@@ -1,7 +1,9 @@
+require(`colors`);
 const pkg = require(`../package.json`);
 
 function versionHandler() {
-  console.log(`v${pkg.version}`);
+  const [major, minor, patch] = pkg.version.split(`.`);
+  console.log(`v${major.red}.${minor.green}.${patch.blue}`);
 }
 
 module.exports = {
