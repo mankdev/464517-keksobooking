@@ -1,5 +1,5 @@
 require(`colors`);
-const pkg = require(`../package.json`);
+const pkg = require(`./package.json`);
 
 function versionHandler() {
   const [major, minor, patch] = pkg.version.split(`.`);
