@@ -12,6 +12,20 @@ const TITLES = [
   `Неуютное бунгало по колено в воде`
 ];
 
+const CHEK_IN_OUT_TIMES = [
+  `12:00`,
+  `13:00`,
+  `14:00`
+];
+
+const FEATURE_LIST = [`wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `conditioner`];
+
+const PHOTOS = [
+  `http://o0.github.io/assets/images/tokyo/hotel1.jpg`,
+  `http://o0.github.io/assets/images/tokyo/hotel2.jpg`,
+  `http://o0.github.io/assets/images/tokyo/hotel3.jpg`
+];
+
 const generateTitle = (function () {
   let shuffledTitleIndexes = ([...Array(TITLES.length).keys()]).sort(() => Math.random() - 0.5);
 
@@ -21,11 +35,6 @@ const generateTitle = (function () {
     return TITLES[index];
   };
 })();
-
-// const generateLocation = () => {
-//   const x = Math.floor(Math.random() * (900 + 1 - 300) + 300);
-//   const y = Math.floor(Math.random() * (150 + 1 - 300) + 300);
-// };
 
 module.exports = {
   generateEntity() {
@@ -41,7 +50,14 @@ module.exports = {
       offer: {
         title: generateTitle(),
         address: `{{${location.x}}}, {{${location.y}}}`,
-        price: randomFromRange(1000, 1000000)
+        price: randomFromRange(1000, 1000000),
+        rooms: randomFromRange(1, 5),
+        guests: randomFromRange(1, 5) * randomFromRange(1, 3),
+        checkin: CHEK_IN_OUT_TIMES[randomFromRange(0, 2)],
+        checkout: CHEK_IN_OUT_TIMES[randomFromRange(0, 2)],
+        features: ([...FEATURE_LIST]).sort(() => Math.random() - 0.5).slice(randomFromRange(0, FEATURE_LIST.length)),
+        description: ``,
+        photos: ([...PHOTOS]).sort(() => Math.random() - 0.5),
       },
       location
     };
