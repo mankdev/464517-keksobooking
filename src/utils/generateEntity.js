@@ -1,5 +1,4 @@
 const superheroes = require(`superheroes`);
-const randomFromRange = (min, max) => Math.floor(Math.random() * (max + 1 - min) + min);
 
 const TITLES = [
   `Большая уютная квартира`,
@@ -11,6 +10,15 @@ const TITLES = [
   `Уютное бунгало далеко от моря`,
   `Неуютное бунгало по колено в воде`
 ];
+
+const MIN_PRICE = 1000;
+const MAX_PRICE = 1000000;
+
+const MIN_ROOMS_COUNT = 1;
+const MAX_ROOMS_COUNT = 5;
+
+const MIN_GUESTS_PER_ROOM = 1;
+const MAX_GUESTS_PER_ROOM = 3;
 
 const CHEK_IN_OUT_TIMES = [
   `12:00`,
@@ -26,8 +34,17 @@ const PHOTOS = [
   `http://o0.github.io/assets/images/tokyo/hotel3.jpg`
 ];
 
+const MIN_X = 300;
+const MAX_X = 900;
+const MIN_Y = 150;
+const MAX_Y = 500;
+
+const randomFromRange = (min, max) => Math.floor(Math.random() * (max + 1 - min) + min);
+const randomElement = (arr) => arr[randomFromRange(0, arr.length - 1)];
+const shuffle = (arr) => ([...arr]).sort(() => Math.random() - 0.5);
+
 const generateTitle = (function () {
-  let shuffledTitleIndexes = ([...Array(TITLES.length).keys()]).sort(() => Math.random() - 0.5);
+  let shuffledTitleIndexes = shuffle([...Array(TITLES.length).keys()]);
 
   return function getNextTitle() {
     const index = shuffledTitleIndexes.pop();
@@ -39,8 +56,8 @@ const generateTitle = (function () {
 module.exports = {
   generateEntity() {
     const location = {
-      x: randomFromRange(300, 900),
-      y: randomFromRange(150, 500)
+      x: randomFromRange(MIN_X, MAX_X),
+      y: randomFromRange(MIN_Y, MAX_Y)
     };
 
     return {
@@ -50,14 +67,15 @@ module.exports = {
       offer: {
         title: generateTitle(),
         address: `{{${location.x}}}, {{${location.y}}}`,
-        price: randomFromRange(1000, 1000000),
-        rooms: randomFromRange(1, 5),
-        guests: randomFromRange(1, 5) * randomFromRange(1, 3),
-        checkin: CHEK_IN_OUT_TIMES[randomFromRange(0, 2)],
-        checkout: CHEK_IN_OUT_TIMES[randomFromRange(0, 2)],
-        features: ([...FEATURE_LIST]).sort(() => Math.random() - 0.5).slice(randomFromRange(0, FEATURE_LIST.length)),
+        price: randomFromRange(MIN_PRICE, MAX_PRICE),
+        rooms: randomFromRange(MIN_ROOMS_COUNT, MAX_ROOMS_COUNT),
+        guests: randomFromRange(MIN_ROOMS_COUNT, MAX_ROOMS_COUNT) *
+          randomFromRange(MIN_GUESTS_PER_ROOM, MAX_GUESTS_PER_ROOM),
+        checkin: randomElement(CHEK_IN_OUT_TIMES),
+        checkout: randomElement(CHEK_IN_OUT_TIMES),
+        features: shuffle(FEATURE_LIST).slice(randomFromRange(0, FEATURE_LIST.length)),
         description: ``,
-        photos: ([...PHOTOS]).sort(() => Math.random() - 0.5),
+        photos: shuffle(PHOTOS),
       },
       location
     };
