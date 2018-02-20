@@ -1,5 +1,5 @@
 const colors = require(`colors`);
-const pkg = require(`../package.json`);
+const pkg = require(`./package.json`);
 
 function authorHandler() {
   console.log(colors.underline(pkg.author));

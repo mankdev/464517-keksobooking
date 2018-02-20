@@ -21,7 +21,8 @@
   "devDependencies": {
     "eslint": "4.17.0",
     "eslint-config-htmlacademy": "0.4.2",
-    "mocha": "5.0.0"
+    "mocha": "5.0.0",
+    "superheroes": "^1.0.0"
   },
   "dependencies": {
     "colors": "1.1.2"

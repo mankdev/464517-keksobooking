@@ -1,10 +1,10 @@
-const versionDescriptor = require(`./src/version`);
-const helpDescriptor = require(`./src/help`);
-const greetingDescriptor = require(`./src/greeting`);
-const unknownDescriptor = require(`./src/unknown`);
-const authorDescriptor = require(`./src/author`);
-const descriptionDescriptor = require(`./src/description`);
-const licenseDescriptor = require(`./src/license`);
+const versionDescriptor = require(`./src/descriptors/version`);
+const helpDescriptor = require(`./src/descriptors/help`);
+const greetingDescriptor = require(`./src/descriptors/greeting`);
+const unknownDescriptor = require(`./src/descriptors/unknown`);
+const authorDescriptor = require(`./src/descriptors/author`);
+const descriptionDescriptor = require(`./src/descriptors/description`);
+const licenseDescriptor = require(`./src/descriptors/license`);
 
 const registeredDescriptors = [
   versionDescriptor,
