@@ -1,43 +1,91 @@
 require(`colors`);
 const pkg = require(`../../package.json`);
 const readline = require(`readline`);
+const {promisify} = require(`util`);
+const path = require(`path`);
+const fs = require(`fs`);
+
+const {generateEntity} = require(`../utils/generateEntity`);
+
+const unlink = promisify(fs.unlink);
+const exists = promisify(fs.exists);
+const writeFile = promisify(fs.writeFile);
 
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
 
+const YSE_ANSWERS = [`y`, `yes`];
+
 const requestDataFromUser = (query) => new Promise((resolve) => rl.question(query, resolve));
 
-const yesAnswers = [`y`, `yes`];
+const suggestUserToGenerateData = () => requestDataFromUser(`Хотите сгенерировать тестовых данных?\n`)
+    .then((rawAnswer) => {
+      const answer = rawAnswer.toLowerCase().trim();
+
+      if (YSE_ANSWERS.indexOf(answer) > -1) {
+        return {isWantToGenerate: true};
+      } else {
+        console.log(`Ответьте "y" или "yes"`);
+        return suggestUserToGenerateData();
+      }
+    });
+
+
+const requestAmount = (collectedData) => requestDataFromUser(`Сколько сущностей будем генерировать?\n`)
+    .then((rawAmount) => {
+      const amount = parseInt(rawAmount, 10);
+
+      if (isNaN(amount)) {
+        console.log(`"${rawAmount}" — не число. Введите число.`);
+        return requestAmount(collectedData);
+      } else {
+        return Object.assign({}, collectedData, {amount});
+      }
+    });
+
+const requestFileName = (collectedData) =>
+  requestDataFromUser(`Куда сохранить сгенерированные данные? (введите имя файла)\n`)
+      .then((rawAnswer) => {
+        const fileName = rawAnswer.toLowerCase().trim();
+        const filePath = path.join(process.cwd(), fileName);
+        return Promise.all([filePath, fileName, exists(filePath)]);
+      })
+      .then(([filePath, fileName, isExists]) => {
+        if (!isExists) {
+          return Object.assign({}, collectedData, {
+            path: filePath,
+            fileName
+          });
+        } else {
+          console.log(`"${fileName}" уже существует. Перезаписать?`);
+          return requestFileName(collectedData);
+        }
+      });
+
+const generateMockData = (collectedData) => {
+  const data = Array.from(Array(collectedData.amount).keys()).map(() => {
+    return generateEntity();
+  });
+  return writeFile(collectedData.path, JSON.stringify(data))
+      .then(() => {
+        console.log(`"${collectedData.fileName}" сохранен`);
+      });
+};
 
 function emptyHandler() {
   console.log(
       `Привет пользователь! Эта программа будет запускать сервер «${pkg.name.bold}». Автор: ${pkg.author.underline}.`
   );
 
-  requestDataFromUser(`Хотите сгенерировать тестовых данных?\n`)
-      .then((rawAnswer) => {
-        const answer = rawAnswer.toLowerCase().trim();
-        if (yesAnswers.indexOf(answer) > -1) {
-          return requestDataFromUser(`Сколько сущностей будем генерировать?\n`);
-        } else {
-          return Promise.reject(new Error(`Получен неожиданный ответ.`));
-        }
-      })
-      .then((rawAmount) => {
-        const amount = parseInt(rawAmount, 10);
-        if (isNaN(amount)) {
-          return Promise.reject(new Error(`Количество должно быть числом.`));
-        } else {
-          return amount;
-        }
-      })
+  return suggestUserToGenerateData()
+      .then(requestAmount)
+      .then(requestFileName)
+      .then(generateMockData)
       .then(() => rl.close())
       .catch((err) => {
         console.error(err.message);
-        console.error(`Программа завершила работу. Попробуйте еще раз.`);
-        process.exit(1);
       });
 }
 
