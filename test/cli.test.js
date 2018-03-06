@@ -3,8 +3,10 @@ const fs = require(`fs`);
 const assert = require(`assert`);
 const {Program} = require(`./utils`);
 const path = require(`path`);
+
 const unlink = promisify(fs.unlink);
 const exists = promisify(fs.exists);
+const writeFile = promisify(fs.writeFile);
 
 describe(`[CLI] Usage Without Arguments`, () => {
   let program;
@@ -19,8 +21,11 @@ describe(`[CLI] Usage Without Arguments`, () => {
   afterEach(() => {
     program.kill();
     const testFile = path.join(process.cwd(), `test-data.json`);
+    const alreadyExistsFile = path.join(process.cwd(), `already-exists.json`);
     return exists(testFile)
-        .then((isExists) => isExists && unlink(testFile));
+        .then((isExists) => isExists && unlink(testFile))
+        .then(() => exists(alreadyExistsFile))
+        .then((isExists) => isExists && unlink(alreadyExistsFile));
   });
 
   it(`should greet user`, () => {
@@ -39,7 +44,7 @@ describe(`[CLI] Usage Without Arguments`, () => {
         .then(() => {
           program.send(`ashdu`);
 
-          return program.waitForLine(`Хотите сгенерировать тестовых данных?`)
+          return program.waitForLine(`Хотите сгенерировать тестовых данных?`);
         })
         .then(() => {
           assert.equal(program.messageList[2], `Ответьте "y" или "yes"`);
@@ -89,10 +94,9 @@ describe(`[CLI] Usage Without Arguments`, () => {
         })
         .then(() => {
           program.send(`package.json`);
-          return program.waitForLine(`Куда сохранить сгенерированные данные? (введите имя файла)`);
+          return program.waitForLine(`"package.json" уже существует. Перезаписать?`);
         }).then(() => {
           assert.equal(program.messageList[4], `"package.json" уже существует. Перезаписать?`);
-          assert.equal(program.messageList[5], `Куда сохранить сгенерированные данные? (введите имя файла)`);
         });
   });
 
@@ -120,6 +124,35 @@ describe(`[CLI] Usage Without Arguments`, () => {
         .then(() => {
           const data = require(path.join(process.cwd(), `test-data.json`));
           assert.ok(data[0].offer);
+        });
+  });
+
+  it(`should override file if user allow it`, () => {
+    program.send(`y`);
+
+    return program.waitForLine(`Сколько сущностей будем генерировать?`)
+        .then(() => writeFile(path.join(process.cwd(), `already-exists.json`), `[]`))
+        .then(() => {
+          program.send(`2`);
+          return program.waitForLine(`Куда сохранить сгенерированные данные? (введите имя файла)`);
+        })
+        .then(() => {
+          program.send(`already-exists.json`);
+          return program.waitForLine(`"already-exists.json" уже существует. Перезаписать?`);
+        })
+        .then(() => {
+          program.send(`y`);
+          return program.waitForLine(`"already-exists.json" сохранен`);
+        })
+        .then(() => {
+          assert.equal(program.messageList[5], `"already-exists.json" сохранен`);
+          return exists(path.join(process.cwd(), `already-exists.json`));
+        })
+        .then((isExists) => assert.ok(isExists))
+        .then(() => {
+          const data = require(path.join(process.cwd(), `already-exists.json`));
+
+          assert.equal(data.length, 2);
         });
   });
 });

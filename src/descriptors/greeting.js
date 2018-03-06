@@ -45,6 +45,19 @@ const requestAmount = (collectedData) => requestDataFromUser(`Сколько с�
       }
     });
 
+const requestConfirmationRewrite = (collectedData) =>
+  requestDataFromUser(`"${collectedData.fileName}" уже существует. Перезаписать?\n`)
+      .then((rawAnswer) => {
+        const answer = rawAnswer.toLowerCase().trim();
+
+        if (YSE_ANSWERS.indexOf(answer) > -1) {
+          return collectedData;
+        } else {
+          throw new Error(`Файл "${collectedData.fileName}" уже существует. Попробуйте еще раз.`);
+        }
+      });
+
+
 const requestFileName = (collectedData) =>
   requestDataFromUser(`Куда сохранить сгенерированные данные? (введите имя файла)\n`)
       .then((rawAnswer) => {
@@ -53,14 +66,15 @@ const requestFileName = (collectedData) =>
         return Promise.all([filePath, fileName, exists(filePath)]);
       })
       .then(([filePath, fileName, isExists]) => {
+        const nextData = Object.assign({}, collectedData, {
+          path: filePath,
+          fileName
+        });
+
         if (!isExists) {
-          return Object.assign({}, collectedData, {
-            path: filePath,
-            fileName
-          });
+          return nextData;
         } else {
-          console.log(`"${fileName}" уже существует. Перезаписать?`);
-          return requestFileName(collectedData);
+          return requestConfirmationRewrite(nextData);
         }
       });
 
@@ -68,7 +82,10 @@ const generateMockData = (collectedData) => {
   const data = Array.from(Array(collectedData.amount).keys()).map(() => {
     return generateEntity();
   });
-  return writeFile(collectedData.path, JSON.stringify(data))
+
+  return exists(collectedData.path)
+      .then((isExists) => isExists && unlink(collectedData.path))
+      .then(() => writeFile(collectedData.path, JSON.stringify(data)))
       .then(() => {
         console.log(`"${collectedData.fileName}" сохранен`);
       });
@@ -86,6 +103,7 @@ function emptyHandler() {
       .then(() => rl.close())
       .catch((err) => {
         console.error(err.message);
+        process.exit();
       });
 }
 
