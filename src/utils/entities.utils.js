@@ -53,31 +53,40 @@ const generateTitle = (function () {
   };
 })();
 
-module.exports = {
-  generateEntity() {
-    const location = {
-      x: randomFromRange(MIN_X, MAX_X),
-      y: randomFromRange(MIN_Y, MAX_Y)
-    };
+const generateEntity = () => {
+  const location = {
+    x: randomFromRange(MIN_X, MAX_X),
+    y: randomFromRange(MIN_Y, MAX_Y)
+  };
 
-    return {
-      author: {
-        avatar: `https://robohash.org/${superheroes.random()}`
-      },
-      offer: {
-        title: generateTitle(),
-        address: `{{${location.x}}}, {{${location.y}}}`,
-        price: randomFromRange(MIN_PRICE, MAX_PRICE),
-        rooms: randomFromRange(MIN_ROOMS_COUNT, MAX_ROOMS_COUNT),
-        guests: randomFromRange(MIN_ROOMS_COUNT, MAX_ROOMS_COUNT) *
-          randomFromRange(MIN_GUESTS_PER_ROOM, MAX_GUESTS_PER_ROOM),
-        checkin: randomElement(CHEK_IN_OUT_TIMES),
-        checkout: randomElement(CHEK_IN_OUT_TIMES),
-        features: shuffle(FEATURE_LIST).slice(randomFromRange(0, FEATURE_LIST.length - 1)),
-        description: ``,
-        photos: shuffle(PHOTOS),
-      },
-      location
-    };
-  }
+  return {
+    author: {
+      avatar: `https://robohash.org/${superheroes.random()}`
+    },
+    offer: {
+      title: generateTitle(),
+      address: `{{${location.x}}}, {{${location.y}}}`,
+      price: randomFromRange(MIN_PRICE, MAX_PRICE),
+      rooms: randomFromRange(MIN_ROOMS_COUNT, MAX_ROOMS_COUNT),
+      guests: randomFromRange(MIN_ROOMS_COUNT, MAX_ROOMS_COUNT) *
+      randomFromRange(MIN_GUESTS_PER_ROOM, MAX_GUESTS_PER_ROOM),
+      checkin: randomElement(CHEK_IN_OUT_TIMES),
+      checkout: randomElement(CHEK_IN_OUT_TIMES),
+      features: shuffle(FEATURE_LIST).slice(randomFromRange(0, FEATURE_LIST.length - 1)),
+      description: ``,
+      photos: shuffle(PHOTOS),
+    },
+    location
+  };
+};
+
+const generateEntities = (quantity) => {
+  return Array.from(Array(quantity).keys()).map(() => {
+    return generateEntity();
+  });
+}
+
+module.exports = {
+  generateEntity,
+  generateEntities
 };

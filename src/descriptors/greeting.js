@@ -5,7 +5,7 @@ const {promisify} = require(`util`);
 const path = require(`path`);
 const fs = require(`fs`);
 
-const {generateEntity} = require(`../utils/generateEntity`);
+const {generateEntities} = require(`../utils/entities.utils`);
 
 const unlink = promisify(fs.unlink);
 const exists = promisify(fs.exists);
@@ -79,9 +79,7 @@ const requestFileName = (collectedData) =>
       });
 
 const generateMockData = (collectedData) => {
-  const data = Array.from(Array(collectedData.amount).keys()).map(() => {
-    return generateEntity();
-  });
+  const data = generateEntities(collectedData.amount);
 
   return exists(collectedData.path)
       .then((isExists) => isExists && unlink(collectedData.path))
