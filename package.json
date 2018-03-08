@@ -25,6 +25,7 @@
     "superheroes": "^1.0.0"
   },
   "dependencies": {
-    "colors": "1.1.2"
+    "colors": "1.1.2",
+    "express": "^4.16.2"
   }
 }
