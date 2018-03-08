@@ -98,7 +98,8 @@ describe(`Entities utils`, () => {
       const {offer: {features}} = generateEntity();
 
       assert.ok(!!features.length);
-      features.forEach((feature) => assert.ok(FEATURE_LIST.indexOf(feature) > -1));
+      const verifier = (feature) => assert.ok(FEATURE_LIST.indexOf(feature) > -1);
+      features.forEach(verifier);
     });
 
     it(`"offer.description" should be empty string`, () => {

@@ -84,7 +84,7 @@ const generateEntities = (quantity) => {
   return Array.from(Array(quantity).keys()).map(() => {
     return generateEntity();
   });
-}
+};
 
 module.exports = {
   generateEntity,
