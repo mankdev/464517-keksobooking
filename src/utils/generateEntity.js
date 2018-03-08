@@ -73,7 +73,7 @@ module.exports = {
           randomFromRange(MIN_GUESTS_PER_ROOM, MAX_GUESTS_PER_ROOM),
         checkin: randomElement(CHEK_IN_OUT_TIMES),
         checkout: randomElement(CHEK_IN_OUT_TIMES),
-        features: shuffle(FEATURE_LIST).slice(randomFromRange(0, FEATURE_LIST.length)),
+        features: shuffle(FEATURE_LIST).slice(randomFromRange(0, FEATURE_LIST.length - 1)),
         description: ``,
         photos: shuffle(PHOTOS),
       },
