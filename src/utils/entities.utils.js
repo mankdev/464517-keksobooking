@@ -53,6 +53,18 @@ const generateTitle = (function () {
   };
 })();
 
+const generateDate = ((startDate = new Date(`2018-03-10`)) => {
+  let prevousDate = startDate;
+
+  return () => {
+    const nextDate = new Date(prevousDate.getTime());
+
+    nextDate.setDate(nextDate.getDate() + 1);
+    prevousDate = nextDate;
+    return nextDate.getTime();
+  };
+})();
+
 const generateEntity = () => {
   const location = {
     x: randomFromRange(MIN_X, MAX_X),
@@ -76,7 +88,8 @@ const generateEntity = () => {
       description: ``,
       photos: shuffle(PHOTOS),
     },
-    location
+    location,
+    date: generateDate()
   };
 };
 
