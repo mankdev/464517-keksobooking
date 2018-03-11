@@ -1,3 +1,5 @@
+const {oneOf} = require(`../../utils/collection.utils`);
+
 const TYPES = [`flat`, `house`, `bungalo`, `palace`];
 const NAMES = [`Keks`, `Pavel`, `Nikolay`, `Alex`, `Ulyana`, `Anastasyia`, `Julia`];
 const FEATURES = [`dishwasher`, `elevator`, `conditioner`, `parking`, `washer`, `wifi`];
@@ -6,11 +8,37 @@ const IMAGE_MIME_TYPES = [`image/jpeg`, `image/png`];
 const REQUIRED_MESSAGE = `это поле обязательно`;
 const BAD_VALUE = `не верное значение`;
 
+const TIME_STRING = {
+  LENGTH: 5,
+  MAX_HOURS: 24,
+  MAX_MINUTES: 60,
+  MIN_HOURS: 0,
+  MIN_MINUTES: 0
+};
+
+const TITLE = {
+  MAX_LENGTH: 100,
+  MIN_LENGTH: 30
+};
+
+const PRICE = {
+  MIN: 1,
+  MAX: 100000
+};
+
+const ADDRESS_MAX_LENGTH = 1000;
+
+const ROOMS = {
+  MAX: 1000,
+  MIN: 0
+};
+
+
 const isTimeStringValid = (time) => {
   try {
     const [hours, minutes] = time.split(`:`);
 
-    if (time.length !== 5) {
+    if (time.length !== TIME_STRING.LENGTH) {
       return false;
     }
 
@@ -18,11 +46,11 @@ const isTimeStringValid = (time) => {
       return false;
     }
 
-    if (hours > 24 || hours < 0) {
+    if (hours > TIME_STRING.MAX_HOURS || hours < TIME_STRING.MIN_HOURS) {
       return false;
     }
 
-    if (minutes > 60 || minutes < 0) {
+    if (minutes > TIME_STRING.MAX_MINUTES || minutes < TIME_STRING.MIN_MINUTES) {
       return false;
     }
   } catch (err) {
@@ -36,10 +64,10 @@ const errorCheckers = {
   title: (title) => {
     try {
       if (title) {
-        if (title.length > 100) {
+        if (title.length > TITLE.MAX_LENGTH) {
           return `должно быть короче 100 символов`;
         }
-        if (title.length < 30) {
+        if (title.length < TITLE.MIN_LENGTH) {
           return `должно быть больше 30 символов`;
         }
       } else {
@@ -54,7 +82,7 @@ const errorCheckers = {
 
   type: (type) => {
     if (type) {
-      if (TYPES.indexOf(type) === -1) {
+      if (!oneOf(type, TYPES)) {
         return BAD_VALUE;
       }
     } else {
@@ -70,11 +98,11 @@ const errorCheckers = {
         return BAD_VALUE;
       }
 
-      if (price <= 0) {
+      if (price < PRICE.MIN) {
         return `должно быть больше 0`;
       }
 
-      if (price > 100000) {
+      if (price > PRICE.MAX) {
         return `должно быть не больше 100 000`;
       }
     } else {
@@ -87,7 +115,7 @@ const errorCheckers = {
   address: (address) => {
     try {
       if (address) {
-        if (address.length > 1000) {
+        if (address.length > ADDRESS_MAX_LENGTH) {
           return `должно быть короче 1000 символов`;
         }
       } else {
@@ -105,11 +133,11 @@ const errorCheckers = {
       if (isNaN(rooms)) {
         return BAD_VALUE;
       }
-      if (rooms < 0) {
+      if (rooms < ROOMS.MIN) {
         return `должно быть больше или равно 0`;
       }
 
-      if (rooms > 1000) {
+      if (rooms > ROOMS.MAX) {
         return `должно быть не больше 1000`;
       }
     } else {
@@ -121,7 +149,7 @@ const errorCheckers = {
 
   name: (name) => {
     if (name) {
-      if (NAMES.indexOf(name) === -1) {
+      if (!oneOf(name, NAMES)) {
         return BAD_VALUE;
       }
     }
@@ -160,7 +188,7 @@ const errorCheckers = {
           return BAD_VALUE;
         }
 
-        const unregisteredFeatures = features.filter((feature) => FEATURES.indexOf(feature) === -1);
+        const unregisteredFeatures = features.filter((feature) => !oneOf(feature, FEATURES));
 
         if (unregisteredFeatures.length) {
           return BAD_VALUE;
@@ -176,7 +204,7 @@ const errorCheckers = {
   avatar: (avatar) => {
     try {
       if (avatar) {
-        if (IMAGE_MIME_TYPES.indexOf(avatar.mimetype) === -1) {
+        if (!oneOf(avatar.mimetype, IMAGE_MIME_TYPES)) {
           return BAD_VALUE;
         }
       }
@@ -190,7 +218,7 @@ const errorCheckers = {
   preview: (preview) => {
     try {
       if (preview) {
-        if (IMAGE_MIME_TYPES.indexOf(preview.mimetype) === -1) {
+        if (!oneOf(preview.mimetype, IMAGE_MIME_TYPES)) {
           return BAD_VALUE;
         }
       }
