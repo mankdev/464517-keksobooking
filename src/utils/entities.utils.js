@@ -1,18 +1,21 @@
 const superheroes = require(`superheroes`);
 
+const TYPES = [`flat`, `house`, `bungalo`, `palace`];
+const NAMES = [`Keks`, `Pavel`, `Nikolay`, `Alex`, `Ulyana`, `Anastasyia`, `Julia`];
+
 const TITLES = [
-  `Большая уютная квартира`,
-  `Маленькая неуютная квартира`,
-  `Огромный прекрасный дворец`,
-  `Маленький ужасный дворец`,
-  `Красивый гостевой домик`,
+  `Большая уютная квартира для семьи`,
+  `Маленькая неуютная квартира на одного`,
+  `Огромный прекрасный дворец для друзей`,
+  `Маленький ужасный дворец для вечеринок`,
+  `Красивый гостевой домик для кота`,
   `Некрасивый негостеприимный домик`,
-  `Уютное бунгало далеко от моря`,
+  `Уютное бунгало далеко от океана`,
   `Неуютное бунгало по колено в воде`
 ];
 
 const MIN_PRICE = 1000;
-const MAX_PRICE = 1000000;
+const MAX_PRICE = 100000;
 
 const MIN_ROOMS_COUNT = 1;
 const MAX_ROOMS_COUNT = 5;
@@ -27,12 +30,6 @@ const CHEK_IN_OUT_TIMES = [
 ];
 
 const FEATURE_LIST = [`wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `conditioner`];
-
-const PHOTOS = [
-  `http://o0.github.io/assets/images/tokyo/hotel1.jpg`,
-  `http://o0.github.io/assets/images/tokyo/hotel2.jpg`,
-  `http://o0.github.io/assets/images/tokyo/hotel3.jpg`
-];
 
 const MIN_X = 300;
 const MAX_X = 900;
@@ -65,11 +62,15 @@ const generateDate = ((startDate = new Date(`2018-03-10`)) => {
   };
 })();
 
-const generateEntity = () => {
-  const location = {
+const generateEntityLocation = () => {
+  return {
     x: randomFromRange(MIN_X, MAX_X),
     y: randomFromRange(MIN_Y, MAX_Y)
   };
+};
+
+const generateEntity = () => {
+  const location = generateEntityLocation();
 
   return {
     author: {
@@ -77,6 +78,7 @@ const generateEntity = () => {
     },
     offer: {
       title: generateTitle(),
+      type: randomElement(TYPES),
       address: `{{${location.x}}}, {{${location.y}}}`,
       price: randomFromRange(MIN_PRICE, MAX_PRICE),
       rooms: randomFromRange(MIN_ROOMS_COUNT, MAX_ROOMS_COUNT),
@@ -86,7 +88,7 @@ const generateEntity = () => {
       checkout: randomElement(CHEK_IN_OUT_TIMES),
       features: shuffle(FEATURE_LIST).slice(randomFromRange(0, FEATURE_LIST.length - 1)),
       description: ``,
-      photos: shuffle(PHOTOS),
+      name: randomElement(NAMES)
     },
     location,
     date: generateDate()
@@ -101,5 +103,7 @@ const generateEntities = (quantity) => {
 
 module.exports = {
   generateEntity,
-  generateEntities
+  generateEntities,
+  generateDate,
+  generateEntityLocation
 };

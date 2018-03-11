@@ -1,14 +1,15 @@
 const assert = require(`assert`);
 const {generateEntity, generateEntities} = require(`../src/utils/entities.utils`);
+const {validate} = require(`../src/server/offers/validate`);
 
 const POSSIBLE_TITLES = [
-  `Большая уютная квартира`,
-  `Маленькая неуютная квартира`,
-  `Огромный прекрасный дворец`,
-  `Маленький ужасный дворец`,
-  `Красивый гостевой домик`,
+  `Большая уютная квартира для семьи`,
+  `Маленькая неуютная квартира на одного`,
+  `Огромный прекрасный дворец для друзей`,
+  `Маленький ужасный дворец для вечеринок`,
+  `Красивый гостевой домик для кота`,
   `Некрасивый негостеприимный домик`,
-  `Уютное бунгало далеко от моря`,
+  `Уютное бунгало далеко от океана`,
   `Неуютное бунгало по колено в воде`
 ];
 
@@ -19,13 +20,6 @@ const TIMES = [
 ];
 
 const FEATURE_LIST = [`wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `conditioner`];
-
-const PHOTOS = [
-  `http://o0.github.io/assets/images/tokyo/hotel1.jpg`,
-  `http://o0.github.io/assets/images/tokyo/hotel2.jpg`,
-  `http://o0.github.io/assets/images/tokyo/hotel3.jpg`
-];
-
 
 describe(`Entities utils`, () => {
   describe(`#generateEntity`, () => {
@@ -41,6 +35,13 @@ describe(`Entities utils`, () => {
 
     it(`should generate "offer" section`, () => {
       assert.ok(generateEntity().offer);
+    });
+
+    it(`offer should pass validation function`, () => {
+      const {offer} = generateEntity();
+      const result = validate(offer);
+
+      assert.ok(result.isValid);
     });
 
     it(`"offer.title" should return one of predefined list of titles`, () => {
@@ -106,16 +107,6 @@ describe(`Entities utils`, () => {
       const {offer: {description}} = generateEntity();
 
       assert.equal(description, ``);
-    });
-
-    it(`"offer.photos" should be set of 3 images`, () => {
-      const {offer: {photos}} = generateEntity();
-      assert.equal(photos.length, 3);
-    });
-
-    it(`"offer.photos" should be random list of predefined values`, () => {
-      const {offer: {photos}} = generateEntity();
-      photos.forEach((photo) => assert.ok(PHOTOS.indexOf(photo) > -1));
     });
 
     it(`"location.x" should be between 300 and 900`, () => {

@@ -42,7 +42,7 @@ describe(`GET /api/offers`, () => {
           const offers = response.body;
           assert.equal(offers.length, 20);
           assert.equal(Object.keys(offers[0]).length, 4);
-          assert.equal(Object.keys(offers[0].offer).length, 10);
+          assert.equal(Object.keys(offers[0].offer).length, 11);
         });
   });
 
