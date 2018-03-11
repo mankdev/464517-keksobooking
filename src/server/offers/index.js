@@ -1,10 +1,10 @@
 const {Router} = require(`express`);
 const bodyParser = require(`body-parser`);
 const multer = require(`multer`);
-const {generateEntities} = require(`../../utils/entities.utils`);
 const {validate} = require(`./validate`);
 const {deserialize} = require(`./deserialize`);
 const {ValidationError} = require(`../utils/errors`);
+const {createAsyncHandler} = require(`../utils/createAsyncHandler`);
 
 const DEFAULT_LIMIT = 20;
 const DEFAULT_SKIP = 0;
@@ -13,31 +13,26 @@ const upload = multer({storage: multer.memoryStorage()});
 const route = new Router();
 route.use(bodyParser.json());
 
-const offers = generateEntities(20);
+route.get(``, createAsyncHandler(async (req, res) => {
+  const {query: {limit = DEFAULT_LIMIT, skip = DEFAULT_SKIP}} = req;
+  const data = await (await route.offersStore.getAllOffers()).skip(skip).limit(limit).toArray();
 
-const prepareData = (data, limit = DEFAULT_LIMIT, skip = DEFAULT_SKIP) => data.slice(skip, skip + limit);
-const findOfferByDate = (data, date) => data.filter((offer) => offer.date === date);
-// const deserializeData = (data, files) =>
+  res.send(data);
+}));
 
-
-route.get(``, (req, res) => {
-  const {query} = req;
-  res.send(prepareData(offers, query.limit, query.skip));
-});
-
-route.get(`/:date`, (req, res) => {
+route.get(`/:date`, createAsyncHandler(async (req, res) => {
   const {params} = req;
   const date = parseInt(params.date, 10);
 
-  const result = findOfferByDate(offers, date);
+  const result = await route.offersStore.getOfferByDate(date);
 
-  if (result.length) {
+  if (result) {
     res.send(result);
   } else {
     res.status(404)
         .end();
   }
-});
+}));
 
 route.post(``, upload.fields([{name: `avatar`, maxCount: 1}, {name: `preview`, maxCount: 1}]), (req, res) => {
   const data = deserialize(req.body, req.files);
@@ -50,6 +45,13 @@ route.post(``, upload.fields([{name: `avatar`, maxCount: 1}, {name: `preview`, m
   }
 });
 
+const createOffersRoute = (offersStore, imageStore) => {
+  route.offersStore = offersStore;
+  route.imageStore = imageStore;
+
+  return route;
+};
+
 module.exports = {
-  offersRoute: route
+  createOffersRoute
 };

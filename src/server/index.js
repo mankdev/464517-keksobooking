@@ -1,11 +1,14 @@
 const express = require(`express`);
-const {offersRoute} = require(`./offers`);
+const {createOffersRoute} = require(`./offers`);
 const {ValidationError} = require(`./utils/errors`);
+
+const {MockOfferStore} = require(`../../test/server/offers/offerStore.mock`);
+const {MockImageStore} = require(`../../test/server/offers/imageStore.mock`);
 
 const server = express();
 
 server.use(express.static(`static`));
-server.use(`/api/offers`, offersRoute);
+server.use(`/api/offers`, createOffersRoute(new MockOfferStore(), new MockImageStore()));
 
 server.use(`/api/:unimplementedResource`, (req, res) => {
   res.status(501).send(`Not Implemented`);

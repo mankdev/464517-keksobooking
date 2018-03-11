@@ -1,7 +1,7 @@
 const assert = require(`assert`);
 const request = require(`supertest`);
 
-const {server} = require(`../src/server`);
+const {server} = require(`../../../src/server`);
 
 const WRONG_DATA = {
   title: `Уютное бунгало далеко от моря`,
@@ -80,7 +80,7 @@ describe(`GET /api/offers/:date`, () => {
         .get(`/api/offers/${date.getTime()}`)
         .expect(200)
         .then(({body}) => {
-          assert.equal(body.length, 1);
+          assert.equal(Object.keys(body.offer).length, 11);
         });
   });
 });

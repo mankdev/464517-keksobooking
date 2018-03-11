@@ -1,5 +1,5 @@
 const assert = require(`assert`);
-const {validate} = require(`../src/server/offers/validate`);
+const {validate} = require(`../../../src/server/offers/validate`);
 
 const VALID_SAMPLE = {
   title: `Роскошная вилла на берегу озера`,
