@@ -4,12 +4,11 @@ const {createServer} = require(`../server`);
 
 const DEFAULT_PORT = SERVER_PORT;
 
-const {mockOfferStore} = require(`../../test/server/offers/offerStore.mock`);
-const {mockImageStore} = require(`../../test/server/offers/imageStore.mock`);
-
-
 function serverHandler() {
-  const server = createServer(mockOfferStore, mockImageStore);
+  const {offersStore} = require(`../server/offers/store`);
+  const {imagesStore} = require(`../server/images/store`);
+
+  const server = createServer(offersStore, imagesStore);
   let [port] = process.argv.slice(3);
   port = port || DEFAULT_PORT;
 

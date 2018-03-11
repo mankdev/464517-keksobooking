@@ -6,6 +6,7 @@ const authorDescriptor = require(`./src/descriptors/author`);
 const descriptionDescriptor = require(`./src/descriptors/description`);
 const licenseDescriptor = require(`./src/descriptors/license`);
 const serverDescriptor = require(`./src/descriptors/server`);
+const fillDescriptor = require(`./src/descriptors/fill`);
 
 const registeredDescriptors = [
   versionDescriptor,
@@ -13,7 +14,8 @@ const registeredDescriptors = [
   authorDescriptor,
   descriptionDescriptor,
   licenseDescriptor,
-  serverDescriptor
+  serverDescriptor,
+  fillDescriptor
 ];
 
 const systemDescriptors = [

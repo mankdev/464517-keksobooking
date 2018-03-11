@@ -1,30 +1,35 @@
 const {database} = require(`../../database`);
-const {Cursor} = require(`../../utils`);
 
 const setupCollection = async () => {
   const db = await database;
 
   return db.collection(`offers`);
-}
+};
 
-class OfferStore {
-  constructor() {
-    this._data = generateEntities(20);
+class OffersStore {
+  constructor(collection) {
+    this.collection = collection;
   }
 
   async getAllOffers() {
-    return new Cursor(this._data);
+    return (await this.collection).find();
   }
 
   async getOfferByDate(date) {
-    return this._data.find((item) => item.date === date);
+    const result = await (await this.collection).find({date}).toArray();
+    if (!result.length) {
+      return null;
+    } else {
+      return result[result.length - 1];
+    }
   }
 
-  async save() {
-
+  async save(offer) {
+    return (await this.collection).insertOne(offer);
   }
 }
 
 module.exports = {
-  MockOfferStore
+  offersStore: new OffersStore(setupCollection()
+      .catch((err) => console.error(`Failed to set up "offers" collection`, err)))
 };

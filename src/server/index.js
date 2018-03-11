@@ -28,7 +28,7 @@ const createServer = (offersStore, imageStore) => {
   });
 
   return server;
-}
+};
 
 module.exports = {
   createServer
