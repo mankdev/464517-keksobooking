@@ -2,6 +2,9 @@ const {Router} = require(`express`);
 const bodyParser = require(`body-parser`);
 const multer = require(`multer`);
 const {generateEntities} = require(`../../utils/entities.utils`);
+const {validate} = require(`./validate`);
+const {deserialize} = require(`./deserialize`);
+const {ValidationError} = require(`../utils/errors`);
 
 const DEFAULT_LIMIT = 20;
 const DEFAULT_SKIP = 0;
@@ -14,6 +17,8 @@ const offers = generateEntities(20);
 
 const prepareData = (data, limit = DEFAULT_LIMIT, skip = DEFAULT_SKIP) => data.slice(skip, skip + limit);
 const findOfferByDate = (data, date) => data.filter((offer) => offer.date === date);
+// const deserializeData = (data, files) =>
+
 
 route.get(``, (req, res) => {
   const {query} = req;
@@ -34,16 +39,15 @@ route.get(`/:date`, (req, res) => {
   }
 });
 
-route.post(``, upload.single(`avatar`), (req, res) => {
-  const result = Object.assign({}, req.body);
+route.post(``, upload.fields([{name: `avatar`, maxCount: 1}, {name: `preview`, maxCount: 1}]), (req, res) => {
+  const data = deserialize(req.body, req.files);
+  const validationResults = validate(data);
 
-  if (req.file) {
-    result.author = {
-      avatar: `/api/offers/${req.body.date}/avatar`
-    };
+  if (!validationResults.isValid) {
+    throw new ValidationError(validationResults.errors);
+  } else {
+    res.send(data);
   }
-
-  res.send(result);
 });
 
 module.exports = {
