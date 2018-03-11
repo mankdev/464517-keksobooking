@@ -9,6 +9,7 @@ const VALID_SAMPLE = {
   checkin: `12:00`,
   checkout: `12:00`,
   rooms: 5,
+  guests: 4,
   features: [`dishwasher`, `elevator`],
   avatar: {
     fieldname: `avatar`,
@@ -325,6 +326,33 @@ describe(`offer validation helper`, () => {
       expectValidationFailed(result);
 
       assert.equal(result.errors.preview, `не верное значение`);
+    });
+  });
+
+  describe(`"guests" field`, () => {
+    it(`should be required`, () => {
+      delete sample.guests;
+
+      const result = validate(sample);
+      expectValidationFailed(result);
+
+      assert.equal(result.errors.guests, `это поле обязательно`);
+    });
+
+    it(`should be between 1 and 100`, () => {
+      sample.guests = 0;
+
+      const fewGuestsResult = validate(sample);
+
+      sample.guests = 101;
+
+      const manyGuestsResults = validate(sample);
+
+      expectValidationFailed(fewGuestsResult);
+      expectValidationFailed(manyGuestsResults);
+
+      assert.equal(fewGuestsResult.errors.guests, `должно быть больше или равно 1`);
+      assert.equal(manyGuestsResults.errors.guests, `должно быть не больше 100`);
     });
   });
 });

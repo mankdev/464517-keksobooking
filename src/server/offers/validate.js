@@ -33,6 +33,10 @@ const ROOMS = {
   MIN: 0
 };
 
+const GUESTS = {
+  MAX: 100,
+  MIN: 1
+};
 
 const isTimeStringValid = (time) => {
   try {
@@ -227,7 +231,26 @@ const errorCheckers = {
     }
 
     return false;
-  }
+  },
+
+  guests: (guests) => {
+    if (guests || guests === 0) {
+      if (isNaN(guests)) {
+        return BAD_VALUE;
+      }
+      if (guests < GUESTS.MIN) {
+        return `должно быть больше или равно 1`;
+      }
+
+      if (guests > GUESTS.MAX) {
+        return `должно быть не больше 100`;
+      }
+    } else {
+      return REQUIRED_MESSAGE;
+    }
+
+    return false;
+  },
 };
 
 function validate(data) {

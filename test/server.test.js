@@ -21,6 +21,7 @@ const VALID_SAMPLE = {
   address: `Озерная улица дом 1`,
   checkin: `12:00`,
   checkout: `12:00`,
+  guests: 5,
   rooms: 5,
   features: [`dishwasher`, `elevator`],
   name: `Keks`
@@ -100,6 +101,7 @@ describe(`POST /api/offers`, () => {
         .field(`price`, VALID_SAMPLE.price)
         .field(`address`, VALID_SAMPLE.address)
         .field(`checkin`, VALID_SAMPLE.checkin)
+        .field(`guests`, VALID_SAMPLE.guests)
         .field(`checkout`, VALID_SAMPLE.checkout)
         .field(`rooms`, VALID_SAMPLE.rooms)
         .field(`name`, VALID_SAMPLE.name)
@@ -179,6 +181,7 @@ describe(`POST /api/offers`, () => {
         .field(`checkin`, VALID_SAMPLE.checkin)
         .field(`checkout`, VALID_SAMPLE.checkout)
         .field(`rooms`, VALID_SAMPLE.rooms)
+        .field(`guests`, VALID_SAMPLE.guests)
         .field(`name`, VALID_SAMPLE.name)
         .attach(`avatar`, `test/fixtures/avatar.png`)
         .attach(`preview`, `test/fixtures/avatar.png`)
@@ -193,6 +196,7 @@ describe(`POST /api/offers`, () => {
         .field(`price`, VALID_SAMPLE.price)
         .field(`address`, VALID_SAMPLE.address)
         .field(`checkin`, VALID_SAMPLE.checkin)
+        .field(`guests`, VALID_SAMPLE.guests)
         .field(`checkout`, VALID_SAMPLE.checkout)
         .field(`rooms`, VALID_SAMPLE.rooms)
         .field(`name`, VALID_SAMPLE.name)
