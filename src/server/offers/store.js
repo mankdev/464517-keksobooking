@@ -1,7 +1,13 @@
-const {generateEntities} = require(`../../../src/utils/entities.utils`);
+const {database} = require(`../../database`);
 const {Cursor} = require(`../../utils`);
 
-class MockOfferStore {
+const setupCollection = async () => {
+  const db = await database;
+
+  return db.collection(`offers`);
+}
+
+class OfferStore {
   constructor() {
     this._data = generateEntities(20);
   }
@@ -20,5 +26,5 @@ class MockOfferStore {
 }
 
 module.exports = {
-  mockOfferStore: new MockOfferStore()
+  MockOfferStore
 };

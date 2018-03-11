@@ -13,5 +13,5 @@ class MockImageStore {
 }
 
 module.exports = {
-  MockImageStore
+  mockImageStore: new MockImageStore()
 };

@@ -1,7 +1,11 @@
 const assert = require(`assert`);
 const request = require(`supertest`);
 
-const {server} = require(`../../../src/server`);
+const {createServer} = require(`../../../src/server`);
+
+const {mockOfferStore} = require(`./offerStore.mock`);
+const {mockImageStore} = require(`./imageStore.mock`);
+const server = createServer(mockOfferStore, mockImageStore);
 
 const WRONG_DATA = {
   title: `Уютное бунгало далеко от моря`,
@@ -75,13 +79,20 @@ describe(`GET /api/offers/:date`, () => {
   });
 
   it(`should return offers with provided date`, () => {
-    const date = new Date(`2018-03-11`);
+    const date = new Date(`2018-04-04`);
     return request(server)
         .get(`/api/offers/${date.getTime()}`)
         .expect(200)
         .then(({body}) => {
           assert.equal(Object.keys(body.offer).length, 11);
         });
+  });
+
+  it(`should correct handle if offer not found`, () => {
+    const date = new Date(`2018-03-09`);
+    return request(server)
+        .get(`/api/offers/${date.getTime()}`)
+        .expect(404);
   });
 });
 

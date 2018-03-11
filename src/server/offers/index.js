@@ -3,7 +3,7 @@ const bodyParser = require(`body-parser`);
 const multer = require(`multer`);
 const {validate} = require(`./validate`);
 const {deserialize} = require(`./deserialize`);
-const {ValidationError} = require(`../utils/errors`);
+const {ValidationError, NotFoundError} = require(`../utils/errors`);
 const {createAsyncHandler} = require(`../utils/createAsyncHandler`);
 
 const DEFAULT_LIMIT = 20;
@@ -29,8 +29,7 @@ route.get(`/:date`, createAsyncHandler(async (req, res) => {
   if (result) {
     res.send(result);
   } else {
-    res.status(404)
-        .end();
+    throw new NotFoundError(`Offer for date ${new Date(date)} not found`);
   }
 }));
 
