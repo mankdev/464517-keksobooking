@@ -1,50 +1,24 @@
 const express = require(`express`);
-const bodyParser = require(`body-parser`);
-const multer = require(`multer`);
-const {generateEntities} = require(`../utils/entities.utils`);
+const {offersRoute} = require(`./offers`);
+const {ValidationError} = require(`./utils/errors`);
 
 const server = express();
-const DEFAULT_LIMIT = 20;
-const DEFAULT_SKIP = 0;
-const upload = multer({storage: multer.memoryStorage()});
 
 server.use(express.static(`static`));
-server.use(bodyParser.json());
+server.use(`/api/offers`, offersRoute);
 
-const offers = generateEntities(20);
-
-const prepareData = (data, limit = DEFAULT_LIMIT, skip = DEFAULT_SKIP) => data.slice(skip, skip + limit);
-const findOfferByDate = (data, date) => data.filter((offer) => offer.date === date);
-
-server.get(`/api/offers`, (req, res) => {
-  const {query} = req;
-  res.send(prepareData(offers, query.limit, query.skip));
+server.use(`/api/:unimplementedResource`, (req, res) => {
+  res.status(501).send(`Not Implemented`);
 });
 
-server.get(`/api/offers/:date`, (req, res) => {
-  const {params} = req;
-  const date = parseInt(params.date, 10);
-
-  const result = findOfferByDate(offers, date);
-
-  if (result.length) {
-    res.send(result);
-  } else {
-    res.status(404)
-        .end();
-  }
-});
-
-server.post(`/api/offers`, upload.single(`avatar`), (req, res) => {
-  const result = Object.assign({}, req.body);
-
-  if (req.file) {
-    result.author = {
-      avatar: `/api/offers/${req.body.date}/avatar`
-    };
+server.use((error, req, res, next) => {
+  if (error instanceof ValidationError) {
+    res.status(400);
+    res.json(error.errors);
+    res.end();
   }
 
-  res.send(result);
+  next();
 });
 
 module.exports = {
