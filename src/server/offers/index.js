@@ -54,9 +54,21 @@ route.get(`/:date/avatar`, createAsyncHandler(async (req, res) => {
 
   const result = await route.offersStore.getOfferByDate(date);
 
+  if (!result) {
+    throw new NotFoundError(`Offer for date ${new Date(date)} not found`);
+  }
+
   const {author: {avatar}} = result;
 
+  if (!avatar) {
+    throw new NotFoundError(`Avatar for offer with date ${new Date(date)} not found`);
+  }
+
   const {info, stream} = await route.imageStore.get(avatar);
+
+  if (!info) {
+    throw new NotFoundError(`Avatar for offer with date ${new Date(date)} not found`);
+  }
 
   res.set(`content-type`, info.contentType);
   res.set(`content-length`, info.length);
@@ -69,9 +81,21 @@ route.get(`/:date/preview`, createAsyncHandler(async (req, res) => {
 
   const result = await route.offersStore.getOfferByDate(date);
 
+  if (!result) {
+    throw new NotFoundError(`Offer for date ${new Date(date)} not found`);
+  }
+
   const {offer: {preview}} = result;
 
+  if (!preview) {
+    throw new NotFoundError(`Preview for offer with date ${new Date(date)} not found`);
+  }
+
   const {info, stream} = await route.imageStore.get(preview);
+
+  if (!info) {
+    throw new NotFoundError(`Preview for offer with date ${new Date(date)} not found`);
+  }
 
   res.set(`content-type`, info.contentType);
   res.set(`content-length`, info.length);
