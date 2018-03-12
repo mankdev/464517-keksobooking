@@ -9,6 +9,10 @@ function deserialize(data, files) {
     if (files.preview) {
       serializedData.preview = files.preview[0];
     }
+
+    if (data.features) {
+      serializedData.features = JSON.parse(data.features);
+    }
   }
 
   return serializedData;

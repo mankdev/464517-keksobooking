@@ -1,56 +1,25 @@
-const {fork} = require(`child_process`);
-
-class Program {
-  constructor(program, messageList) {
-    this._program = program;
-    this.messageList = messageList;
+class Cursor {
+  constructor(data) {
+    this.data = data;
   }
 
-  send(message) {
-    this._program.stdin.write(`${message}\n`);
+  skip(count) {
+    return new Cursor(this.data.slice(count));
   }
 
-  waitForLine(message) {
-    return new Promise((resolve) => {
-      const dataHandler = (data) => {
-        if (data.trim() === message) {
-          this._program.stdout.removeListener(`data`, dataHandler);
-          resolve();
-        }
-      };
-
-      this._program.stdout.on(`data`, dataHandler);
-    });
+  limit(count) {
+    return new Cursor(this.data.slice(0, count));
   }
 
-  kill() {
-    this._program.removeAllListeners();
-    this._program.kill();
+  async count() {
+    return this.data.length;
   }
 
-  static create() {
-    return new Promise((resolve) => {
-      const messageList = [];
-      const program = fork(`./index.js`, {
-        stdio: [`pipe`, `pipe`, `pipe`, `ipc`]
-      });
-      program.stdout.setEncoding(`utf8`);
-      program.stderr.setEncoding(`utf8`);
-
-      process.nextTick(() => {
-        const onFirstMessage = () => {
-          program.stdout.removeListener(`data`, onFirstMessage);
-          resolve(new Program(program, messageList));
-        };
-        program.stdout.on(`data`, (data) => {
-          messageList.push(data.trim());
-        });
-        program.stdout.on(`data`, onFirstMessage);
-      });
-    });
+  async toArray() {
+    return this.data;
   }
 }
 
 module.exports = {
-  Program
+  Cursor
 };

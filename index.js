@@ -3,17 +3,15 @@ const helpDescriptor = require(`./src/descriptors/help`);
 const greetingDescriptor = require(`./src/descriptors/greeting`);
 const unknownDescriptor = require(`./src/descriptors/unknown`);
 const authorDescriptor = require(`./src/descriptors/author`);
-const descriptionDescriptor = require(`./src/descriptors/description`);
-const licenseDescriptor = require(`./src/descriptors/license`);
 const serverDescriptor = require(`./src/descriptors/server`);
+const fillDescriptor = require(`./src/descriptors/fill`);
 
 const registeredDescriptors = [
   versionDescriptor,
   helpDescriptor,
   authorDescriptor,
-  descriptionDescriptor,
-  licenseDescriptor,
-  serverDescriptor
+  serverDescriptor,
+  fillDescriptor
 ];
 
 const systemDescriptors = [

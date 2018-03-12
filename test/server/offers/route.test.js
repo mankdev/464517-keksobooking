@@ -1,7 +1,11 @@
 const assert = require(`assert`);
 const request = require(`supertest`);
 
-const {server} = require(`../src/server`);
+const {createServer} = require(`../../../src/server`);
+
+const {mockOfferStore} = require(`./offerStore.mock`);
+const {mockImageStore} = require(`./imageStore.mock`);
+const server = createServer(mockOfferStore, mockImageStore);
 
 const WRONG_DATA = {
   title: `Уютное бунгало далеко от моря`,
@@ -21,6 +25,7 @@ const VALID_SAMPLE = {
   address: `Озерная улица дом 1`,
   checkin: `12:00`,
   checkout: `12:00`,
+  guests: 5,
   rooms: 5,
   features: [`dishwasher`, `elevator`],
   name: `Keks`
@@ -41,7 +46,7 @@ describe(`GET /api/offers`, () => {
           const offers = response.body;
           assert.equal(offers.length, 20);
           assert.equal(Object.keys(offers[0]).length, 4);
-          assert.equal(Object.keys(offers[0].offer).length, 10);
+          assert.equal(Object.keys(offers[0].offer).length, 11);
         });
   });
 
@@ -74,13 +79,20 @@ describe(`GET /api/offers/:date`, () => {
   });
 
   it(`should return offers with provided date`, () => {
-    const date = new Date(`2018-03-11`);
+    const date = new Date(`2018-04-04`);
     return request(server)
         .get(`/api/offers/${date.getTime()}`)
         .expect(200)
         .then(({body}) => {
-          assert.equal(body.length, 1);
+          assert.equal(Object.keys(body.offer).length, 11);
         });
+  });
+
+  it(`should correct handle if offer not found`, () => {
+    const date = new Date(`2018-03-09`);
+    return request(server)
+        .get(`/api/offers/${date.getTime()}`)
+        .expect(404);
   });
 });
 
@@ -100,6 +112,7 @@ describe(`POST /api/offers`, () => {
         .field(`price`, VALID_SAMPLE.price)
         .field(`address`, VALID_SAMPLE.address)
         .field(`checkin`, VALID_SAMPLE.checkin)
+        .field(`guests`, VALID_SAMPLE.guests)
         .field(`checkout`, VALID_SAMPLE.checkout)
         .field(`rooms`, VALID_SAMPLE.rooms)
         .field(`name`, VALID_SAMPLE.name)
@@ -179,6 +192,7 @@ describe(`POST /api/offers`, () => {
         .field(`checkin`, VALID_SAMPLE.checkin)
         .field(`checkout`, VALID_SAMPLE.checkout)
         .field(`rooms`, VALID_SAMPLE.rooms)
+        .field(`guests`, VALID_SAMPLE.guests)
         .field(`name`, VALID_SAMPLE.name)
         .attach(`avatar`, `test/fixtures/avatar.png`)
         .attach(`preview`, `test/fixtures/avatar.png`)
@@ -193,6 +207,7 @@ describe(`POST /api/offers`, () => {
         .field(`price`, VALID_SAMPLE.price)
         .field(`address`, VALID_SAMPLE.address)
         .field(`checkin`, VALID_SAMPLE.checkin)
+        .field(`guests`, VALID_SAMPLE.guests)
         .field(`checkout`, VALID_SAMPLE.checkout)
         .field(`rooms`, VALID_SAMPLE.rooms)
         .field(`name`, VALID_SAMPLE.name)
