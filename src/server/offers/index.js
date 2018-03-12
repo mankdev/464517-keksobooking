@@ -7,6 +7,7 @@ const {deserialize} = require(`./deserialize`);
 const {ValidationError, NotFoundError} = require(`../utils/errors`);
 const {createAsyncHandler} = require(`../utils/createAsyncHandler`);
 const {generateDate, generateEntityLocation} = require(`../../utils/entities.utils`);
+const {logger} = require(`../../utils/logger`);
 
 const createStreamFromBuffer = (buffer) => {
   const stream = new Duplex();
@@ -21,6 +22,12 @@ const upload = multer({storage: multer.memoryStorage()});
 
 const route = new Router();
 route.use(bodyParser.json());
+
+route.use((req, res, next) => {
+  res.header(`Access-Control-Allow-Origin`, `*`);
+  res.header(`Access-Control-Allow-Headers`, `Origin, X-Requested-With, Content-Type, Accept`);
+  next();
+});
 
 route.get(``, createAsyncHandler(async (req, res) => {
   const {query: {limit = DEFAULT_LIMIT, skip = DEFAULT_SKIP}} = req;
@@ -75,6 +82,7 @@ route.get(`/:date/preview`, createAsyncHandler(async (req, res) => {
 route.post(``,
     upload.fields([{name: `avatar`, maxCount: 1}, {name: `preview`, maxCount: 1}]),
     createAsyncHandler(async (req, res) => {
+      logger.info(`data received from user`, req.body);
       const offer = deserialize(req.body, req.files);
       const data = {};
       const validationResults = validate(offer);
@@ -90,6 +98,7 @@ route.post(``,
         if (offer.avatar) {
           await route.imageStore.save(avatarPath, offer.avatar.mimetype, createStreamFromBuffer(offer.avatar.buffer));
           delete offer.avatar;
+          logger.info(`new avatar available:`, {avatarPath});
           data.author = {
             avatar: avatarPath
           };
@@ -97,6 +106,7 @@ route.post(``,
 
         if (offer.preview) {
           await route.imageStore.save(previewPath, offer.preview.mimetype, createStreamFromBuffer(offer.preview.buffer));
+          logger.info(`new preview available:`, {previewPath});
           offer.preview = previewPath;
         }
 

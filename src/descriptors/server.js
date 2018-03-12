@@ -1,6 +1,7 @@
 const {SERVER_PORT, SERVER_HOST} = require(`../../config`);
 
 const {createServer} = require(`../server`);
+const {logger} = require(`../utils/logger`);
 
 const DEFAULT_PORT = SERVER_PORT;
 
@@ -14,9 +15,9 @@ function serverHandler() {
 
   server.listen(port, SERVER_HOST, (err) => {
     if (err) {
-      console.log(`Error happens`, err);
+      logger.error(`Error happens during start up`, err);
     } else {
-      console.log(`Server started on http://${SERVER_HOST}:${port}`);
+      logger.info(`Server started on http://${SERVER_HOST}:${port}`);
     }
   });
 }

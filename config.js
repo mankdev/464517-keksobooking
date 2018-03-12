@@ -6,5 +6,6 @@ module.exports = {
   DB_PASS: process.env.DB_PASS || `root`,
 
   SERVER_PORT: process.env.SERVER_PORT || `3000`,
-  SERVER_HOST: `localhost`
+  SERVER_HOST: `localhost`,
+  SERVER_LOG_LEVEL: `info`
 };

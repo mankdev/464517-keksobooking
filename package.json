@@ -6,7 +6,7 @@
   "scripts": {
     "test:lint": "eslint .",
     "test:mocha": "mocha --recursive",
-    "test": "npm run test:lint && npm run test:mocha"
+    "test": "npm run test:lint && NODE_ENV=test npm run test:mocha"
   },
   "repository": {
     "type": "git",
@@ -31,6 +31,7 @@
     "dotenv": "5.0.1",
     "express": "4.16.2",
     "mongodb": "3.0.4",
-    "multer": "1.3.0"
+    "multer": "1.3.0",
+    "winston": "3.0.0-rc2"
   }
 }
