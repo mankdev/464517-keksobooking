@@ -23,7 +23,7 @@ function serverHandler() {
 }
 
 module.exports = {
-  aliases: [`--server`, `-s`],
-  description: `запускает сервер`,
+  aliases: [`--server [PORT]`, `-s [PORT]`],
+  description: `запускает сервер на порту который идет аргументом`,
   execute: serverHandler,
 };

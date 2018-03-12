@@ -25,7 +25,8 @@ const allDescriptors = [
 
 const [command] = process.argv.slice(2);
 
-const commandDescriptor = allDescriptors.find(((cmd) => cmd.aliases.indexOf(command) > -1)) || unknownDescriptor;
+const commandDescriptor = allDescriptors
+    .find(((cmd) => cmd.aliases.map((alias) => alias.split(` `)[0]).indexOf(command) > -1)) || unknownDescriptor;
 
 commandDescriptor.execute({
   registeredDescriptors,

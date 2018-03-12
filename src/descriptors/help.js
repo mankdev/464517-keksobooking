@@ -9,6 +9,7 @@ function helpHandler({registeredDescriptors}) {
               .map((alias) => alias.grey)
               .join(`, `)} — ${descriptor.description.green}`)
   ].join(`\n`));
+  process.exit(0);
 }
 
 module.exports = {
