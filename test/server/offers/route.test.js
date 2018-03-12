@@ -3,8 +3,8 @@ const request = require(`supertest`);
 
 const {createServer} = require(`../../../src/server`);
 
-const {mockOfferStore} = require(`./offerStore.mock`);
-const {mockImageStore} = require(`./imageStore.mock`);
+const {mockOfferStore} = require(`./offer-store-mock`);
+const {mockImageStore} = require(`./image-store-mock`);
 const server = createServer(mockOfferStore, mockImageStore);
 
 const WRONG_DATA = {

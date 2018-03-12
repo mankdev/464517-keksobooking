@@ -5,7 +5,7 @@ const multer = require(`multer`);
 const {validate} = require(`./validate`);
 const {deserialize} = require(`./deserialize`);
 const {ValidationError, NotFoundError} = require(`../utils/errors`);
-const {createAsyncHandler} = require(`../utils/createAsyncHandler`);
+const {createAsyncHandler} = require(`../utils/create-async-handler`);
 const {generateDate, generateEntityLocation} = require(`../../utils/entities.utils`);
 const {logger} = require(`../../utils/logger`);
 
@@ -31,7 +31,10 @@ route.use((req, res, next) => {
 
 route.get(``, createAsyncHandler(async (req, res) => {
   const {query: {limit = DEFAULT_LIMIT, skip = DEFAULT_SKIP}} = req;
-  const data = await (await route.offersStore.getAllOffers()).skip(skip).limit(limit).toArray();
+  const data = await (await route.offersStore.getAllOffers())
+      .skip(parseInt(skip, 10))
+      .limit(parseInt(limit, 10))
+      .toArray();
 
   res.send(data);
 }));
