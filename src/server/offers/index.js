@@ -143,7 +143,7 @@ route.post(``,
 
         await route.offersStore.save(data);
 
-        res.send(data);
+        res.send(offer);
       }
     })
 );
