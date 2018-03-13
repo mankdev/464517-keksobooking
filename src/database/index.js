@@ -12,7 +12,6 @@ module.exports = {
       .connect(url)
       .then((client) => client.db(dbName))
       .catch((err) => {
-        console.log(err.message);
         logger.error(`Failed to connect to MongoDB`, {err, message: err.message});
         process.exit(1);
       })

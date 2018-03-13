@@ -43,7 +43,7 @@ const shuffle = (arr) => ([...arr]).sort(() => Math.random() - 0.5);
 const generateTitle = (function () {
   let shuffledTitleIndexes = shuffle([...Array(TITLES.length).keys()]);
 
-  return function getNextTitle() {
+  return () => {
     const index = shuffledTitleIndexes.pop();
     shuffledTitleIndexes = [index, ...shuffledTitleIndexes];
     return TITLES[index];

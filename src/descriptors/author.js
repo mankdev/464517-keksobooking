@@ -1,9 +1,10 @@
 const colors = require(`colors`);
 const pkg = require(`../../package.json`);
 
-function authorHandler() {
+const authorHandler = () => {
   console.log(colors.underline(pkg.author));
-}
+  process.exit(0);
+};
 
 module.exports = {
   aliases: [`--author`, `-a`],

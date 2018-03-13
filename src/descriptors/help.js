@@ -1,6 +1,6 @@
 require(`colors`);
 
-function helpHandler({registeredDescriptors}) {
+const helpHandler = ({registeredDescriptors}) => {
   console.log([
     `Доступные команды:`,
     ...registeredDescriptors
@@ -10,7 +10,7 @@ function helpHandler({registeredDescriptors}) {
               .join(`, `)} — ${descriptor.description.green}`)
   ].join(`\n`));
   process.exit(0);
-}
+};
 
 module.exports = {
   aliases: [`--help`, `-h`],

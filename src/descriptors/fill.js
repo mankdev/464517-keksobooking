@@ -5,7 +5,7 @@ const {generateEntities} = require(`../utils/entities.utils`);
 
 const DATA_COUNT = 20;
 
-function fillHandler() {
+const fillHandler = () => {
   const offers = generateEntities(DATA_COUNT);
 
   Promise.all(offers.map((item) => {
@@ -23,7 +23,7 @@ function fillHandler() {
   }))
       .then(() => console.log(`Успешно добавлено ${DATA_COUNT} записей`))
       .then(() => process.exit(0));
-}
+};
 
 module.exports = {
   aliases: [`--fill`, `-f`],

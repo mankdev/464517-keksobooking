@@ -14,19 +14,21 @@ const registeredDescriptors = [
   fillDescriptor
 ];
 
-const systemDescriptors = [
-  greetingDescriptor,
-];
 
 const allDescriptors = [
-  ...registeredDescriptors,
-  ...systemDescriptors,
+  ...registeredDescriptors
 ];
 
 const [command] = process.argv.slice(2);
 
-const commandDescriptor = allDescriptors
-    .find(((cmd) => cmd.aliases.map((alias) => alias.split(` `)[0]).indexOf(command) > -1)) || unknownDescriptor;
+let commandDescriptor;
+
+if (command) {
+  commandDescriptor = allDescriptors
+      .find(((cmd) => cmd.aliases.map((alias) => alias.split(` `)[0]).indexOf(command) > -1)) || unknownDescriptor;
+} else {
+  commandDescriptor = greetingDescriptor;
+}
 
 commandDescriptor.execute({
   registeredDescriptors,

@@ -5,7 +5,7 @@ const {logger} = require(`../utils/logger`);
 
 const DEFAULT_PORT = SERVER_PORT;
 
-function serverHandler() {
+const serverHandler = () => {
   const {offersStore} = require(`../server/offers/store`);
   const {imagesStore} = require(`../server/images/store`);
 
@@ -20,7 +20,7 @@ function serverHandler() {
       logger.info(`Server started on http://${SERVER_HOST}:${port}`);
     }
   });
-}
+};
 
 module.exports = {
   aliases: [`--server [PORT]`, `-s [PORT]`],

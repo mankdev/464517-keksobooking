@@ -253,7 +253,7 @@ const errorCheckers = {
   },
 };
 
-function validate(data) {
+const validate = (data) => {
   let isValid = true;
   const errors = {};
 
@@ -270,7 +270,7 @@ function validate(data) {
     isValid,
     errors
   };
-}
+};
 
 module.exports = {
   validate

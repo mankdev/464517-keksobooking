@@ -1,4 +1,4 @@
-function deserialize(data, files) {
+const deserialize = (data, files) => {
   const serializedData = Object.assign({}, data);
 
   if (files) {
@@ -16,7 +16,7 @@ function deserialize(data, files) {
   }
 
   return serializedData;
-}
+};
 
 module.exports = {
   deserialize
