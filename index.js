@@ -14,17 +14,12 @@ const registeredDescriptors = [
   fillDescriptor
 ];
 
-
-const allDescriptors = [
-  ...registeredDescriptors
-];
-
 const [command] = process.argv.slice(2);
 
 let commandDescriptor;
 
 if (command) {
-  commandDescriptor = allDescriptors
+  commandDescriptor = registeredDescriptors
       .find(((cmd) => cmd.aliases.map((alias) => alias.split(` `)[0]).indexOf(command) > -1)) || unknownDescriptor;
 } else {
   commandDescriptor = greetingDescriptor;
